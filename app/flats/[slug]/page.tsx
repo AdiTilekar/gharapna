@@ -4,13 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FlatRepository } from '@/lib/repositories/flat.repository';
 import { ProjectRepository } from '@/lib/repositories/project.repository';
-import { LocalityRepository } from '@/lib/repositories/locality.repository';
-import { calculatePriceBreakup } from '@/lib/calculators';
-import { PriceBreakup } from '@/components/trust/PriceBreakup';
 import { formatIndianPrice, formatArea, formatRatePerSqFt } from '@/lib/formatters';
-import { siteConfig } from '@/config/site';
-import { MessageCircle, ArrowRight } from 'lucide-react';
-import { Section, PageHeader, PrimaryButton, SecondaryButton } from '@/components/ui/minimal';
+import { ArrowRight } from 'lucide-react';
+import { Section, PageHeader, PrimaryButton } from '@/components/ui/minimal';
 
 interface FlatPageProps {
   params: Promise<{ slug: string }>;
@@ -34,7 +30,7 @@ export async function generateMetadata({ params }: FlatPageProps): Promise<Metad
 
   return {
     title: `${flat.bhk} BHK Flat in ${flat.localityName}, PCMC | ${flat.projectName}`,
-    description: `${flat.bhk} BHK flat in ${flat.projectName}, ${flat.localityName}. Upfront cost breakup and verified carpet areas.`,
+    description: `${flat.bhk} BHK flat in ${flat.projectName}, ${flat.localityName}. Verified carpet areas and upfront pricing.`,
     robots: { index: false, follow: false },
   };
 }
@@ -53,14 +49,7 @@ export default async function FlatDetailPage({ params }: FlatPageProps) {
   }
 
   const project = ProjectRepository.getBySlug(flat.projectSlug);
-  const locality = LocalityRepository.getBySlug(flat.localitySlug);
-  const breakup = calculatePriceBreakup(flat.indicativePrice, flat.carpetAreaSqFt);
   const img = getFlatImage(flat.projectName, flat.localitySlug);
-
-  const whatsappMessage = encodeURIComponent(
-    `Hello Gharapna, I am interested in the ${flat.bhk} BHK flat (Floor ${flat.floor}) at ${flat.projectName}, ${flat.localityName}.`
-  );
-  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
 
   return (
     <Section size="standard" spacing="default">
@@ -137,25 +126,13 @@ export default async function FlatDetailPage({ params }: FlatPageProps) {
           </div>
         </div>
 
-        {/* Action Row: ONE primary enquiry button (coral gradient) + WhatsApp pill */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+        {/* ONE Primary Action Button (coral gradient) */}
+        <div className="pt-2">
           <PrimaryButton href={`/contact?flat=${flat.slug}`}>
             <span>Enquire About This Unit</span>
             <ArrowRight className="w-4 h-4" />
           </PrimaryButton>
-
-          <SecondaryButton href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <MessageCircle className="w-4 h-4 text-emerald-500" />
-            <span>Chat on WhatsApp</span>
-          </SecondaryButton>
         </div>
-
-        {/* Transparent Cost Breakup */}
-        <PriceBreakup
-          breakup={breakup}
-          carpetAreaSqFt={flat.carpetAreaSqFt}
-          unitLabel={`${flat.bhk} BHK • Floor ${flat.floor}`}
-        />
       </div>
     </Section>
   );

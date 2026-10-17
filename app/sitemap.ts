@@ -2,25 +2,18 @@ import { MetadataRoute } from 'next';
 import { LOCALITIES } from '@/data/localities';
 import { PROJECTS } from '@/data/projects';
 import { FLATS } from '@/data/flats';
-import { getAllBlogPosts } from '@/data/blogs';
 import { siteConfig } from '@/config/site';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = siteConfig.url || 'https://gharapna.com';
 
-  // Static marketing & tool pages
+  // Essential Static Routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/locations`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
     },
     {
       url: `${baseUrl}/projects`,
@@ -35,40 +28,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/tools`,
+      url: `${baseUrl}/locations`,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/locations/compare`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/why-gharapna`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.85,
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/contact`,
@@ -88,15 +51,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
-    {
-      url: `${baseUrl}/disclaimer`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
   ];
 
-  // Only index "active" localities (localities with active projects) per prompt mandate
+  // Active PCMC localities
   const activeLocalities = LOCALITIES.filter((loc) => loc.status === 'active');
   const localityRoutes: MetadataRoute.Sitemap = activeLocalities.map((loc) => ({
     url: `${baseUrl}/locations/${loc.slug}`,
@@ -121,14 +78,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }));
 
-  // Blog post routes
-  const blogPosts = getAllBlogPosts();
-  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.publishedAt),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }));
-
-  return [...staticRoutes, ...localityRoutes, ...projectRoutes, ...flatRoutes, ...blogRoutes];
+  return [...staticRoutes, ...localityRoutes, ...projectRoutes, ...flatRoutes];
 }

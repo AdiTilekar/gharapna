@@ -1,7 +1,3 @@
-'use client';
-
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 import { Card, Section } from '@/components/ui/minimal';
 
 interface FeaturedProjectItem {
@@ -40,17 +36,10 @@ export function MinimalFeaturedProjects() {
   return (
     <Section size="wide" spacing="spacious">
       {/* Section Header */}
-      <div className="flex items-baseline justify-between mb-10 md:mb-12">
+      <div className="mb-10 md:mb-12">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
           Featured projects
         </h2>
-        <Link
-          href="/projects"
-          className="text-xs sm:text-sm font-medium text-muted hover:text-foreground inline-flex items-center gap-1 group transition-colors"
-        >
-          <span>View all</span>
-          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-        </Link>
       </div>
 
       {/* 3 Large Image Cards (rounded-3xl, whole card clickable, image zooms slightly) */}

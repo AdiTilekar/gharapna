@@ -4,11 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ProjectRepository } from '@/lib/repositories/project.repository';
 import { LocalityRepository } from '@/lib/repositories/locality.repository';
-import { PriceBreakup } from '@/components/trust/PriceBreakup';
 import { formatIndianPrice } from '@/lib/formatters';
-import { siteConfig } from '@/config/site';
-import { MessageCircle, ArrowRight } from 'lucide-react';
-import { Section, PageHeader, PrimaryButton, SecondaryButton } from '@/components/ui/minimal';
+import { ArrowRight } from 'lucide-react';
+import { Section, PageHeader, PrimaryButton } from '@/components/ui/minimal';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -45,7 +43,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   return {
     title: `${project.name}, ${locality?.name || 'PCMC'} | Verified Flats & Upfront Pricing`,
-    description: `${project.name} in ${locality?.name || 'PCMC'}. Upfront cost breakup and verified carpet areas.`,
+    description: `${project.name} in ${locality?.name || 'PCMC'}. Verified carpet areas and transparent pricing.`,
     robots: { index: false, follow: false },
   };
 }
@@ -68,11 +66,6 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const bhkSummary = project.unitTypes.map((u) => `${u.bhk} BHK`).join(' & ');
   const carpetSummary = `${project.unitTypes[0]?.carpetAreaSqFtMin} - ${project.unitTypes[project.unitTypes.length - 1]?.carpetAreaSqFtMax} sq ft`;
   const img = getProjectImage(project.slug);
-
-  const whatsappMessage = encodeURIComponent(
-    `Hello Gharapna, I would like to schedule a site visit for ${project.name} in ${locality?.name || 'PCMC'}.`
-  );
-  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
 
   const nameWords = project.name.split(' ');
   const prefix = nameWords.length > 1 ? nameWords.slice(0, -1).join(' ') : '';
@@ -153,29 +146,13 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           </div>
         </div>
 
-        {/* Action Row: ONE primary enquiry button (coral gradient) + WhatsApp pill */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+        {/* ONE Primary Action Button (coral gradient) */}
+        <div className="pt-2">
           <PrimaryButton href={`/contact?project=${project.slug}`}>
             <span>Schedule Site Visit</span>
             <ArrowRight className="w-4 h-4" />
           </PrimaryButton>
-
-          <SecondaryButton href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <MessageCircle className="w-4 h-4 text-emerald-500" />
-            <span>Chat on WhatsApp</span>
-          </SecondaryButton>
         </div>
-
-        {/* Transparent Cost Breakup (itemized for first unit type) */}
-        {project.unitTypes[0]?.breakupSample && (
-          <div className="space-y-4">
-            <PriceBreakup
-              breakup={project.unitTypes[0].breakupSample}
-              carpetAreaSqFt={project.unitTypes[0].carpetAreaSqFtMin}
-              unitLabel={`${project.unitTypes[0].bhk} BHK Sample Unit`}
-            />
-          </div>
-        )}
       </div>
     </Section>
   );

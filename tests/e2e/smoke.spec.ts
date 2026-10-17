@@ -42,7 +42,7 @@ test.describe('Gharapna E2E Smoke Tests', () => {
     await expect(page.locator('text=Hospitals & Medical Centers')).toBeVisible();
   });
 
-  test('3. Project Page (/projects/aangan-residences) renders RERA placeholder and all-in price breakup', async ({
+  test('3. Project Page (/projects/aangan-residences) renders RERA placeholder and tabular key facts', async ({
     page,
   }) => {
     await page.goto('/projects/aangan-residences');
@@ -54,10 +54,10 @@ test.describe('Gharapna E2E Smoke Tests', () => {
     const reraBadge = page.locator('text=P52100XXXXXX [TO BE ADDED]');
     await expect(reraBadge.first()).toBeVisible();
 
-    // Cost breakup section
-    await expect(page.locator('text=Transparent Cost Breakup').first()).toBeVisible();
-    await expect(page.locator('text=Stamp Duty & Metro Cess').first()).toBeVisible();
-    await expect(page.locator('text=Government Registration Fee').first()).toBeVisible();
+    // Tabular key facts
+    await expect(page.locator('text=Starting Price').first()).toBeVisible();
+    await expect(page.locator('text=Configuration').first()).toBeVisible();
+    await expect(page.locator('text=Carpet Area').first()).toBeVisible();
   });
 
   test('4. Flats Catalog (/flats) supports filtering and view switching', async ({ page }) => {

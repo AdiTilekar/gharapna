@@ -5,9 +5,8 @@ import { LocalityRepository } from '@/lib/repositories/locality.repository';
 import { ProjectRepository } from '@/lib/repositories/project.repository';
 import { ProjectCard } from '@/components/project/ProjectCard';
 import { formatRatePerSqFt } from '@/lib/formatters';
-import { siteConfig } from '@/config/site';
-import { MessageCircle, ArrowRight } from 'lucide-react';
-import { Section, PageHeader, PrimaryButton, SecondaryButton } from '@/components/ui/minimal';
+import { ArrowRight } from 'lucide-react';
+import { Section, PageHeader, PrimaryButton } from '@/components/ui/minimal';
 
 interface LocalityPageProps {
   params: Promise<{ slug: string }>;
@@ -50,11 +49,6 @@ export default async function LocalityDetailPage({ params }: LocalityPageProps) 
 
   const projectsInLocality = ProjectRepository.getByLocalitySlug(locality.slug);
   const img = getLocalityImage(locality.slug);
-
-  const whatsappMessage = encodeURIComponent(
-    `Hello Gharapna, I am interested in flats in ${locality.name}, ${locality.jurisdiction}.`
-  );
-  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/[^0-9]/g, '')}?text=${whatsappMessage}`;
 
   return (
     <Section size="standard" spacing="default">
@@ -108,17 +102,12 @@ export default async function LocalityDetailPage({ params }: LocalityPageProps) 
           </div>
         </div>
 
-        {/* Action Row: ONE primary enquiry button (coral gradient) + WhatsApp pill */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+        {/* ONE Primary Action Button (coral gradient) */}
+        <div className="pt-2">
           <PrimaryButton href={`/contact?locality=${locality.slug}`}>
             <span>Enquire About {locality.name} Flats</span>
             <ArrowRight className="w-4 h-4" />
           </PrimaryButton>
-
-          <SecondaryButton href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-            <MessageCircle className="w-4 h-4 text-emerald-500" />
-            <span>Chat on WhatsApp</span>
-          </SecondaryButton>
         </div>
 
         {/* Infrastructure & Neighborhood Insights (required by smoke.spec.ts) */}

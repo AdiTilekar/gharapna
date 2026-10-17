@@ -5,6 +5,7 @@ import * as fs from 'fs';
 const SCREENSHOT_DIR = 'C:\\Users\\atile\\.gemini\\antigravity\\brain\\779813d2-b316-4e85-b8f2-1060a2085d4e\\screenshots';
 
 const ROUTES_TO_CAPTURE = [
+  { name: 'homepage', path: '/' },
   { name: 'flats-listing', path: '/flats' },
   { name: 'flat-detail', path: '/flats/2-bhk-flat-in-wakad-pune-tower-a-402' },
   { name: 'projects-listing', path: '/projects' },

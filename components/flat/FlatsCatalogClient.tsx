@@ -33,9 +33,6 @@ export function FlatsCatalogClient({ initialFlats }: FlatsCatalogClientProps) {
   const [budgetRange, setBudgetRange] = useState<string>(
     searchParams.get('budget') || 'all'
   );
-  const [sortBy, setSortBy] = useState<string>(
-    searchParams.get('sort') || 'price-asc'
-  );
 
   // Sync to URL
   useEffect(() => {
@@ -43,11 +40,10 @@ export function FlatsCatalogClient({ initialFlats }: FlatsCatalogClientProps) {
     if (selectedLocality && selectedLocality !== 'all') params.set('locality', selectedLocality);
     if (selectedBhk && selectedBhk !== 'all') params.set('bhk', selectedBhk);
     if (budgetRange && budgetRange !== 'all') params.set('budget', budgetRange);
-    if (sortBy && sortBy !== 'price-asc') params.set('sort', sortBy);
 
     const queryString = params.toString();
     router.replace(`/flats${queryString ? `?${queryString}` : ''}`, { scroll: false });
-  }, [selectedLocality, selectedBhk, budgetRange, sortBy, router]);
+  }, [selectedLocality, selectedBhk, budgetRange, router]);
 
   // Filter & sort logic
   const filteredFlats = useMemo(() => {
@@ -74,16 +70,8 @@ export function FlatsCatalogClient({ initialFlats }: FlatsCatalogClientProps) {
       list = list.filter((f) => f.indicativePrice > 12000000);
     }
 
-    // Sort
-    list.sort((a, b) => {
-      if (sortBy === 'price-asc') return a.indicativePrice - b.indicativePrice;
-      if (sortBy === 'price-desc') return b.indicativePrice - a.indicativePrice;
-      if (sortBy === 'area-desc') return b.carpetAreaSqFt - a.carpetAreaSqFt;
-      return 0;
-    });
-
     return list;
-  }, [initialFlats, selectedLocality, selectedBhk, budgetRange, sortBy]);
+  }, [initialFlats, selectedLocality, selectedBhk, budgetRange]);
 
   const activeLocalities = useMemo(() => {
     return LOCALITIES.filter((l) => l.status === 'active');
@@ -91,15 +79,15 @@ export function FlatsCatalogClient({ initialFlats }: FlatsCatalogClientProps) {
 
   return (
     <div className="space-y-10 font-sans">
-      {/* Slim Filter Row */}
+      {/* Slim Filter Row: Area, BHK, Budget */}
       <div className="flex flex-wrap items-center gap-3 py-3 border-y border-border text-xs">
-        {/* Locality */}
+        {/* Area */}
         <select
           value={selectedLocality}
           onChange={(e) => setSelectedLocality(e.target.value)}
           className="bg-transparent border border-border text-foreground rounded-full px-4 py-2 font-medium focus:outline-none focus:ring-1 focus:ring-coral-start cursor-pointer"
         >
-          <option value="all" className="bg-background text-foreground">All Localities</option>
+          <option value="all" className="bg-background text-foreground">All Areas</option>
           {activeLocalities.map((loc) => (
             <option key={loc.slug} value={loc.slug} className="bg-background text-foreground">
               {loc.name}
@@ -131,22 +119,6 @@ export function FlatsCatalogClient({ initialFlats }: FlatsCatalogClientProps) {
           <option value="90-120" className="bg-background text-foreground">₹90 L - ₹1.2 Cr</option>
           <option value="above-120" className="bg-background text-foreground">Above ₹1.2 Cr</option>
         </select>
-
-        {/* Sort */}
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="bg-transparent border border-border text-foreground rounded-full px-4 py-2 font-medium focus:outline-none focus:ring-1 focus:ring-coral-start cursor-pointer ml-auto"
-        >
-          <option value="price-asc" className="bg-background text-foreground">Price: Low to High</option>
-          <option value="price-desc" className="bg-background text-foreground">Price: High to Low</option>
-          <option value="area-desc" className="bg-background text-foreground">Area: Large to Small</option>
-        </select>
-
-        {/* Results Count */}
-        <span className="text-muted text-xs font-medium pl-1">
-          {filteredFlats.length} flats
-        </span>
       </div>
 
       {/* Grid of rounded-3xl cards matching Featured Projects */}
@@ -160,7 +132,6 @@ export function FlatsCatalogClient({ initialFlats }: FlatsCatalogClientProps) {
               setSelectedLocality('all');
               setSelectedBhk('all');
               setBudgetRange('all');
-              setSortBy('price-asc');
             }}
             className="mt-3 text-xs font-semibold text-coral-start hover:underline"
           >
